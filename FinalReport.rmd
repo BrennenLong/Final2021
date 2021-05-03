@@ -57,6 +57,7 @@ chisq.test(maleTable)
 chisqtestGC(maleTable)
 fisher.test(maleTable)
 ```
+
 The alternate hypothesis is that infection and treatment have some correlation. With a low p- value at 0.0005801, the null hypothesis (that infection and treatment are unrelated) is rejected. In fact, vaccinating males seems to make them more vulnerable to COVID-19.
 
 ### Females
@@ -82,4 +83,36 @@ chisq.test(femaleTable)
 chisqtestGC(femaleTable)
 fisher.test(femaleTable)
 ```
-  The chi-squared statistic here (66.42) is far greater than in the male subgroup (11.720), which would imply a greater effectiveness on females
+
+The chi-squared statistic here (66.42) is far greater than in the male subgroup (11.720), which would imply a greater effectiveness on females
+
+## Drug Use
+
+### Drug users
+
+```{r}
+graphDrug <- yes %>% group_by(infected, treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
+basicC <- ggplot(graphDrug,aes(x=infected,y=count,fill=treatment)) 
+basicC + geom_bar(stat="identity",position="dodge") + ggtitle("Drug user subgroup \n count")
+basicCC <- ggplot(graphDrug,aes(x=infected,y=prcnt*100,fill=treatment)) 
+basicCC + geom_bar(stat="identity", position = "dodge") + ggtitle("Drug user subgroup \n percent")
+```  
+
+The vaccine seems to be very effective on drug users, although this data doesn't differentiate what drugs are being used. This would need further study to analyze.
+
+```{r}
+drugTable <- xtabs(~treatment + infected, data=yes)
+rowPerc(drugTable)
+colPerc(drugTable)
+```
+
+In both the "covid" and "OK" categories, those who were given the vaccine, had a greater percentage (96.37) that were okay than who were given the placebo (93.54).  
+
+```{r}
+chisq.test(drugTable)
+chisqtestGC(drugTable)
+fisher.test(drugTable)
+```
+
+A p-value between 0.0023 and 0.003 (both less than 0.05) suggests that the null hypothesis is rejected. The odds ratio of 0.5455 is reliable since the upper barrier (0.8194) is less than 1. 
+
