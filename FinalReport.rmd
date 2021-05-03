@@ -146,3 +146,6 @@ fisher.test(gayTable)
 
 The odds ratio is more than 1 and p- value is much less than 0.05, meaning that the null hypothesis (that infection and treatment are not correlated) can be rejected. An odds ratio of ~2.4922 means that those in the LGBTQ community are much more likely to get Covid than expected.
 
+# Conclusion
+
+The vaccine is harmful to to males by making them more vulnerable to COVID-19 after recieving the vaccine, and same with the LGBT community.  On the other hand, women and drug users alike had a greater effectiveness with the vaccine.  So we can firmly establish that men and the LGBT community are more at risk for getting the vaccine and women and drug users benefit from the vaccine.
