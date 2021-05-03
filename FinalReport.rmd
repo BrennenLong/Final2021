@@ -116,3 +116,33 @@ fisher.test(drugTable)
 
 A p-value between 0.0023 and 0.003 (both less than 0.05) suggests that the null hypothesis is rejected. The odds ratio of 0.5455 is reliable since the upper barrier (0.8194) is less than 1. 
 
+## Sexual Orientation
+
+### Gays
+
+```{r}
+graphGay <- gay %>% group_by(infected, treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
+basicC <- ggplot(graphGay,aes(x=infected,y=count,fill=treatment)) 
+basicC + geom_bar(stat="identity",position="dodge") + ggtitle("Gay subgroup \n count")
+basicCC <- ggplot(graphGay,aes(x=infected,y=prcnt*100,fill=treatment)) 
+basicCC + geom_bar(stat="identity", position = "dodge") + ggtitle("Gay subgroup \n percent")
+```
+
+The vaccine is incredibly ineffective here; more than 60% of the gays who got Covid were given the drug. This could be because of a larger influx of gay people getting the vaccine.
+
+```{r}
+gayTable <- xtabs(~treatment + infected, data=gay)
+rowPerc(gayTable)
+colPerc(gayTable)
+```
+
+Covid is clearly associated with the vaccine, and the placebo generally results in the patient not contracting it. Thus, this vaccine is harmful to those in the LGBTQ community, for an unknown reason.  
+
+```{r}
+chisq.test(gayTable)
+chisqtestGC(gayTable)
+fisher.test(gayTable)
+```
+
+The odds ratio is more than 1 and p- value is much less than 0.05, meaning that the null hypothesis (that infection and treatment are not correlated) can be rejected. An odds ratio of ~2.4922 means that those in the LGBTQ community are much more likely to get Covid than expected.
+
