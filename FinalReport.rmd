@@ -7,7 +7,6 @@ output:
     number_sections: true
     toc: true
 
----
 
 ```{r include=FALSE,echo=FALSE}
 require(tidyverse)
@@ -16,9 +15,44 @@ require(forcats)
 OldData <-read.csv(file="covid91.csv",header=TRUE)
 #recode to remove the annoying "X" from the dataframe
 FinalData <- OldData %>% mutate(infected = recode(infected, aids = "covid", none = "OK" )) %>% select(-one_of("X"))
+#separate by gender
+male <- subset(FinalData, sex=="guy")
+female <- subset(FinalData, sex=="gal")
+#separate by drug use
+yes <- subset(FinalData, DrugUser=="yes")
+no <- subset(FinalData, DrugUser=="no")
+#separate by sexual orientation
+straight <- subset(FinalData, LGBTQ=="straight")
+gay <- subset(FinalData, LGBTQ=="gay")
 ```
 
 # Introduction
 
 A new  preventative vaccine (covid91) is under test in clinical trials. Given the nature of this vaccine it is suspected that the drug may exhibit different effectiveness across the variety of subpopulations tracked. Consider population subgroups consisting of Males, Females, just the drug users, and just those in the LGBTQ community. Write a complete report that separately considers this drug for each subgroup and your recommendations as to whether people in the subgroup should take the vaccine. Structure your report in four sections each devoted to one of the four subgroups, use null and alternative hypothesis statements and correct statistical verbage when referencing p-values in conclusions.
 
+## Gender
+
+### Males
+
+```{r}
+graphMale <- male %>% group_by(infected, treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
+basicC <- ggplot(graphMale,aes(x=infected,y=count,fill=treatment)) 
+basicC + geom_bar(stat="identity",position="dodge") + ggtitle("Male subgroup \n count")
+basicCC <- ggplot(graphMale,aes(x=infected,y=prcnt*100,fill=treatment)) 
+basicCC + geom_bar(stat="identity", position = "dodge") + ggtitle("Male subgroup \n percent")
+```
+
+This research points to the fact that the vaccine can be harmful. 
+```{r}
+maleTable <- xtabs(~treatment + infected, data=male)
+rowPerc(maleTable)
+colPerc(maleTable)
+```
+
+People with COVID-19 is small in both the placebo and vaccinated groups.  More than half of the people with the COVID-19 vaccine were vaccinated, while more than half of the people recieved the placebo.  This also points that the vaccine is harmful.
+```{r}
+chisq.test(maleTable)
+chisqtestGC(maleTable)
+fisher.test(maleTable)
+```
+The alternate hypothesis is that infection and treatment have some correlation. With a low p- value at 0.0005801, the null hypothesis (that infection and treatment are unrelated) is rejected. In fact, vaccinating males seems to make them more vulnerable to COVID-19
