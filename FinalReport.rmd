@@ -43,6 +43,7 @@ basicCC + geom_bar(stat="identity", position = "dodge") + ggtitle("Male subgroup
 ```
 
 This research points to the fact that the vaccine can be harmful. 
+
 ```{r}
 maleTable <- xtabs(~treatment + infected, data=male)
 rowPerc(maleTable)
@@ -50,9 +51,35 @@ colPerc(maleTable)
 ```
 
 People with COVID-19 is small in both the placebo and vaccinated groups.  More than half of the people with the COVID-19 vaccine were vaccinated, while more than half of the people recieved the placebo.  This also points that the vaccine is harmful.
+
 ```{r}
 chisq.test(maleTable)
 chisqtestGC(maleTable)
 fisher.test(maleTable)
 ```
-The alternate hypothesis is that infection and treatment have some correlation. With a low p- value at 0.0005801, the null hypothesis (that infection and treatment are unrelated) is rejected. In fact, vaccinating males seems to make them more vulnerable to COVID-19
+The alternate hypothesis is that infection and treatment have some correlation. With a low p- value at 0.0005801, the null hypothesis (that infection and treatment are unrelated) is rejected. In fact, vaccinating males seems to make them more vulnerable to COVID-19.
+
+### Females
+
+```{r}
+graphFemale <- female %>% group_by(infected, treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
+basicC <- ggplot(graphFemale,aes(x=infected,y=count,fill=treatment)) 
+basicC + geom_bar(stat="identity",position="dodge") + ggtitle("Female subgroup \n count")
+basicCC <- ggplot(graphFemale,aes(x=infected,y=prcnt*100,fill=treatment)) 
+basicCC + geom_bar(stat="identity", position = "dodge") + ggtitle("Female subgroup \n percent")
+```
+
+The drug seems to be far more effective on females.
+
+```{r}
+femaleTable <- xtabs(~treatment + infected, data=female)
+rowPerc(femaleTable)
+colPerc(femaleTable)
+```
+
+```{r}
+chisq.test(femaleTable)
+chisqtestGC(femaleTable)
+fisher.test(femaleTable)
+```
+  The chi-squared statistic here (66.42) is far greater than in the male subgroup (11.720), which would imply a greater effectiveness on females
